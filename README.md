@@ -63,6 +63,8 @@ https://github.com/philipcristiano/graphite-pager-heroku-example.
 
 Where the file `alerts.yml` is in the following format.
 
+> Environment variables can also be specified in the yaml file at the top level. Simply change the casing of the environment variable to lowercase like so: `redis_url: "redis://localhost:6379/"`
+
 # Configuration of Alerts
 
 Configuration of alerts is handled by a YAML file. This can be verified with

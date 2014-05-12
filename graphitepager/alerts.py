@@ -1,6 +1,5 @@
 import operator
 
-from yaml import load
 from graphite_data_record import NoDataError
 from level import Level
 
@@ -61,23 +60,3 @@ class Alert(object):
             return self.warning
         else:
             return None
-
-
-def contents_of_file(filename):
-    open_file = open(filename)
-    contents = open_file.read()
-    open_file.close()
-    return contents
-
-
-def get_alerts(path):
-    alert_yml = contents_of_file(path)
-    config = load(alert_yml)
-    alerts = []
-    doc_url = config.get('docs_url')
-    for alert_string in config['alerts']:
-        alerts.append(Alert(alert_string, doc_url))
-    return alerts
-
-if __name__ == '__main__':
-    print get_alerts()

@@ -36,7 +36,7 @@ def run_setup():
         zip_safe=True,
         entry_points="""
         [console_scripts]
-        graphite-pager=graphitepager.worker:run
+        graphite-pager=graphitepager.worker:main
         """,
     )
 

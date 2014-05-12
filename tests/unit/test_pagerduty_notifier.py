@@ -7,6 +7,7 @@ from pagerduty import PagerDuty
 from graphitepager.notifiers.pagerduty_notifier import PagerdutyNotifier
 from graphitepager.redis_storage import RedisStorage
 from graphitepager.alerts import Alert
+from graphitepager.config import Config
 from graphitepager.level import Level
 
 
@@ -16,12 +17,13 @@ class TestPagerduteryNotifier(TestCase):
         self.alert_key = 'ALERT KEY'
         self.description = 'ALERT DESCRIPTION'
         self.html_description = 'HTML ALERT DESCRIPTION'
+        self.mock_config = MagicMock(Config)
         self.mock_redis_storage = MagicMock(RedisStorage)
         self.mock_pagerduty_client = MagicMock(PagerDuty)
         self.mock_pagerduty_client.service_key = None
         self.mock_alert = MagicMock(Alert)
 
-        self.pn = PagerdutyNotifier(self.mock_redis_storage)
+        self.pn = PagerdutyNotifier(self.mock_redis_storage, self.mock_config)
         self.pn._client = self.mock_pagerduty_client
 
     def test_should_trigger_with_warning_level_and_key(self):

@@ -3,7 +3,7 @@ from graphitepager.level import Level
 
 class BaseNotifier(object):
 
-    def __init__(self, storage):
+    def __init__(self, storage, config):
         self._client = None
         self._storage = storage
         self._domain = self.__class__.__name__.replace('Notifier', '')
