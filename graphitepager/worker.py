@@ -4,9 +4,7 @@ import datetime
 import os
 import time
 
-from hipchat import HipChat
 from jinja2 import Template
-from pagerduty import PagerDuty
 import redis
 import requests
 import requests.exceptions
@@ -14,11 +12,12 @@ import requests.exceptions
 from alerts import get_alerts
 from graphite_data_record import GraphiteDataRecord
 from graphite_target import get_records
-from hipchat_notifier import HipchatNotifier
 from level import Level
-from notifier_proxy import NotifierProxy
-from pagerduty_notifier import PagerdutyNotifier
 from redis_storage import RedisStorage
+
+from notifiers.notifier_proxy import NotifierProxy
+from notifiers.hipchat_notifier import HipChatNotifier
+from notifiers.pagerduty_notifier import PagerdutyNotifier
 
 GRAPHITE_URL = os.getenv('GRAPHITE_URL')
 
@@ -116,17 +115,13 @@ def create_notifier_proxy():
         os.environ('REDIS_URL', None)
     ))
 
-    pg_key = os.getenv('PAGERDUTY_KEY')
-    pagerduty_client = PagerDuty(pg_key)
-
     notifier_proxy = NotifierProxy()
-    notifier_proxy.add_notifier(
-        PagerdutyNotifier(pagerduty_client, STORAGE))
+    for klass in [HipChatNotifier, PagerdutyNotifier]:
+        notifier = klass(STORAGE)
+        if notifier.enabled:
+            print 'Enabling {0}'.format(notifier._domain)
+            notifier_proxy.add_notifier(notifier)
 
-    if 'HIPCHAT_KEY' in os.environ:
-        hipchat = HipchatNotifier(HipChat(os.getenv('HIPCHAT_KEY')), STORAGE)
-        hipchat.add_room(os.getenv('HIPCHAT_ROOM'))
-        notifier_proxy.add_notifier(hipchat)
     return notifier_proxy
 
 
