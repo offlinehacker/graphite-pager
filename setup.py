@@ -1,36 +1,39 @@
 #!/usr/bin/env python
+from graphitepager import __version__
 import os
-from setuptools import setup
+
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+def open_file(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname))
 
 
 def run_setup():
     setup(
         name='graphitepager',
-        version='0.0.8',
-        description='',
-        keywords='',
-        url='http://github.com/philipcristiano/graphite-pager',
+        version=__version__,
         author='Philip Cristiano',
         author_email='philipcristiano@gmail.com',
+        packages=['graphitepager', 'graphitepager.notifiers'],
+        url='http://github.com/philipcristiano/graphite-pager',
         license='BSD',
-        packages=['graphitepager'],
-        install_requires=[
-            'Jinja2==2.6',
-            'PyYAML==3.10',
-            'pagerduty==0.2.1',
-            'redis==2.6.2',
-            'requests==0.14.0',
-            'python-simple-hipchat==0.1',
-        ],
-        test_suite='tests',
-        long_description=read('README.md'),
-        zip_safe=True,
         classifiers=[
+            'Intended Audience :: System Administrators',
+            'License :: OSI Approved :: BSD License',
+            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 2.6',
+            'Topic :: System :: Monitoring',
         ],
+        description='',
+        keywords='',
+        test_suite='tests',
+        long_description=open_file('README.md').read(),
+        install_requires=open_file('requirements.txt').readlines(),
+        zip_safe=True,
         entry_points="""
         [console_scripts]
         graphite-pager=graphitepager.worker:run
