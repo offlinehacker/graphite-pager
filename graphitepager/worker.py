@@ -110,7 +110,10 @@ def update_notifiers(notifier_proxy, alert, record):
 
 
 def create_notifier_proxy():
-    STORAGE = RedisStorage(redis, os.getenv('REDISTOGO_URL'))
+    STORAGE = RedisStorage(redis, os.environ.get(
+        'REDISTOGO_URL',
+        os.environ('REDIS_URL', None)
+    ))
 
     pg_key = os.getenv('PAGERDUTY_KEY')
     pagerduty_client = PagerDuty(pg_key)

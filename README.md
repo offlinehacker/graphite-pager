@@ -23,6 +23,7 @@ Pager Duty alerts if a metric reaches a warning or critical level.
 
 * PagerDuty account
 * Graphite
+* Redis
 
 ## Notifiers
 
@@ -51,6 +52,8 @@ https://github.com/philipcristiano/graphite-pager-heroku-example.
     GRAPHITE_PASS=HTTP-basic password
     GRAPHITE_URL=HTTPS(hopefully) URL to your Graphite installation
     PAGERDUTY_KEY=Specific PagerDuty application key
+    REDIS_URL=redis://localhost:6379/
+    # REDISTOGO_URL is also supported
 ```
 3. Set up alerts in the `alerts.yml` file
 
