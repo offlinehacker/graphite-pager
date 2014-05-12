@@ -4,7 +4,7 @@ from unittest import TestCase
 from mock import patch, MagicMock
 from pagerduty import PagerDuty
 
-from graphitepager.pagerduty_notifier import PagerdutyNotifier
+from graphitepager.notifiers.pagerduty_notifier import PagerdutyNotifier
 from graphitepager.redis_storage import RedisStorage
 from graphitepager.alerts import Alert
 from graphitepager.level import Level
@@ -21,7 +21,8 @@ class TestPagerduteryNotifier(TestCase):
         self.mock_pagerduty_client.service_key = None
         self.mock_alert = MagicMock(Alert)
 
-        self.pn = PagerdutyNotifier(self.mock_pagerduty_client, self.mock_redis_storage)
+        self.pn = PagerdutyNotifier(self.mock_redis_storage)
+        self.pn._client = self.mock_pagerduty_client
 
     def test_should_trigger_with_warning_level_and_key(self):
         incident_key = 'KEY'

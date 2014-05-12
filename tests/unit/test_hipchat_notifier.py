@@ -4,7 +4,7 @@ from mock import patch, MagicMock
 from hipchat import HipChat
 
 
-from graphitepager.hipchat_notifier import HipchatNotifier
+from graphitepager.notifiers.hipchat_notifier import HipChatNotifier
 from graphitepager.redis_storage import RedisStorage
 from graphitepager.alerts import Alert
 from graphitepager.level import Level
@@ -20,7 +20,8 @@ class TestHipChatNotifier(TestCase):
         self.mock_hipchat_client = MagicMock(HipChat)
         self.mock_alert = MagicMock(Alert)
 
-        self.hcn = HipchatNotifier(self.mock_hipchat_client, self.mock_redis_storage)
+        self.hcn = HipChatNotifier(self.mock_redis_storage)
+        self.hcn._client = self.mock_hipchat_client
 
     def test_should_not_notify_hipchat_if_no_rooms_have_been_added(self):
         self.hcn.notify(self.mock_alert, self.alert_key, Level.WARNING, self.description, self.html_description)
