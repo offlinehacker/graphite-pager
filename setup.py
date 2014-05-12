@@ -2,6 +2,7 @@
 import os
 from setuptools import setup
 
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
@@ -11,7 +12,7 @@ def run_setup():
         name='graphitepager',
         version='0.0.8',
         description='',
-        keywords = '',
+        keywords='',
         url='http://github.com/philipcristiano/graphite-pager',
         author='Philip Cristiano',
         author_email='philipcristiano@gmail.com',

@@ -1,6 +1,6 @@
 import operator
 
-from yaml import load, dump
+from yaml import load
 from graphite_data_record import NoDataError
 from level import Level
 
@@ -15,7 +15,10 @@ class Alert(object):
         self.from_ = alert_data.get('from', '-1min')
         self.exclude = set(alert_data.get('exclude', []))
 
-        self.comparison_operator = self._determine_comparison_operator(self.warning, self.critical)
+        self.comparison_operator = self._determine_comparison_operator(
+            self.warning,
+            self.critical
+        )
         self._doc_url = doc_url
 
     def documentation_url(self, target=None):

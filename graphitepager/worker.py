@@ -24,15 +24,17 @@ GRAPHITE_URL = os.getenv('GRAPHITE_URL')
 
 
 ALERT_TEMPLATE = r"""{{level}} alert for {{alert.name}} {{record.target}}.  The
-current value is {{current_value}} which passes the {{threshold_level|lower}} value of
-{{threshold_value}}. Go to {{graph_url}}.
+current value is {{current_value}} which passes the {{threshold_level|lower}}
+value of {{threshold_value}}. Go to {{graph_url}}.
 {% if docs_url %}Documentation: {{docs_url}}{% endif %}.
 """
 HTML_ALERT_TEMPLATE = r"""{{level}} alert for {{alert.name}} {{record.target}}.
-The current value is {{current_value}} which passes the {{threshold_level|lower}} value of
-{{threshold_value}}. Go to <a href="{{graph_url}}">the graph</a>.
+The current value is {{current_value}} which passes the
+{{threshold_level|lower}} value of {{threshold_value}}.
+Go to <a href="{{graph_url}}">the graph</a>.
 {% if docs_url %}<a href="{{docs_url}}">Documentation</a>{% endif %}.
 """
+
 
 def description_for_alert(template, alert, record, level, current_value):
     context = dict(locals())
@@ -76,17 +78,36 @@ class Description(object):
             self.value,
         )
 
+
 def update_notifiers(notifier_proxy, alert, record):
     alert_key = '{} {}'.format(alert.name, record.target)
 
     alert_level, value = alert.check_record(record)
 
-    description = Description(ALERT_TEMPLATE, alert, record, alert_level, value)
-    html_description = Description(HTML_ALERT_TEMPLATE, alert, record, alert_level, value)
+    description = Description(
+        ALERT_TEMPLATE,
+        alert,
+        record,
+        alert_level,
+        value
+    )
+    html_description = Description(
+        HTML_ALERT_TEMPLATE,
+        alert,
+        record,
+        alert_level,
+        value
+    )
     if alert_level != Level.NOMINAL:
         print description
 
-    notifier_proxy.notify(alert_key, alert_level, description, html_description)
+    notifier_proxy.notify(
+        alert_key,
+        alert_level,
+        description,
+        html_description
+    )
+
 
 def create_notifier_proxy():
     STORAGE = RedisStorage(redis, os.getenv('REDISTOGO_URL'))
@@ -94,11 +115,9 @@ def create_notifier_proxy():
     pg_key = os.getenv('PAGERDUTY_KEY')
     pagerduty_client = PagerDuty(pg_key)
 
-
     notifier_proxy = NotifierProxy()
     notifier_proxy.add_notifier(
         PagerdutyNotifier(pagerduty_client, STORAGE))
-
 
     if 'HIPCHAT_KEY' in os.environ:
         hipchat = HipchatNotifier(HipChat(os.getenv('HIPCHAT_KEY')), STORAGE)
@@ -107,18 +126,32 @@ def create_notifier_proxy():
     return notifier_proxy
 
 
-
 def get_args_from_cli():
     parser = argparse.ArgumentParser(description='Run Graphite Pager')
-    parser.add_argument('--config', metavar='config', type=str, nargs=1, default='alerts.yml', help='path to the config file')
-    parser.add_argument('command', nargs='?', choices=['run', 'verify'], default='run', help='What action to take')
+    parser.add_argument(
+        '--config',
+        metavar='config',
+        type=str,
+        nargs=1,
+        default='alerts.yml',
+        help='path to the config file'
+    )
+    parser.add_argument(
+        'command',
+        nargs='?',
+        choices=['run', 'verify'],
+        default='run',
+        help='What action to take'
+    )
 
     args = parser.parse_args()
     return args
 
+
 def load_alerts(location):
     alerts = get_alerts(location)
     return alerts
+
 
 def run():
     args = get_args_from_cli()
@@ -134,13 +167,13 @@ def run():
             target = alert.target
             try:
                 records = get_records(
-                   GRAPHITE_URL,
-                   requests.get,
-                   GraphiteDataRecord,
-                   target,
-                   from_=alert.from_,
+                    GRAPHITE_URL,
+                    requests.get,
+                    GraphiteDataRecord,
+                    target,
+                    from_=alert.from_,
                 )
-            except requests.exceptions.RequestException as exc:
+            except requests.exceptions.RequestException:
                 notification = 'Could not get target: {}'.format(target)
                 print notification
                 notifier_proxy.notify(
@@ -164,8 +197,12 @@ def run():
         sleep_for = 60 - time_diff
         if sleep_for > 0:
             sleep_for = 60 - time_diff
-            print 'Sleeping for {0} seconds at'.format(sleep_for), datetime.datetime.utcnow()
+            print 'Sleeping for {0} seconds at {1}'.format(
+                sleep_for,
+                datetime.datetime.utcnow()
+            )
             time.sleep(60 - time_diff)
+
 
 if __name__ == '__main__':
     run()
