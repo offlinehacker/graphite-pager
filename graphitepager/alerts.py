@@ -14,12 +14,16 @@ class Alert(object):
         self.critical = alert_data['critical']
         self.from_ = alert_data.get('from', '-1min')
         self.exclude = set(alert_data.get('exclude', []))
+        self.alert_data = alert_data
 
         self.comparison_operator = self._determine_comparison_operator(
             self.warning,
             self.critical
         )
         self._doc_url = doc_url
+
+    def get(self, key, default=None):
+        return self.alert_data.get(key, default)
 
     def documentation_url(self, target=None):
         if self._doc_url is None:

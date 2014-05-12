@@ -8,7 +8,7 @@ class HipchatNotifier(object):
         self._storage = storage
         self._rooms = set()
 
-    def notify(self, alert_key, level, description, html_description):
+    def notify(self, alert, alert_key, level, description, html_description):
         colors = {
             Level.NOMINAL: 'green',
             Level.WARNING: 'yellow',
