@@ -1,5 +1,5 @@
-import os
 from level import Level
+
 
 class HipchatNotifier(object):
 
@@ -26,11 +26,16 @@ class HipchatNotifier(object):
                 color=color,
             )
 
-        notified = self._storage.is_locked_for_domain_and_key(domain, alert_key)
+        notified = self._storage.is_locked_for_domain_and_key(
+            domain,
+            alert_key
+        )
+
+        should_notify = (Level.WARNING, Level.CRITICAL, Level.NO_DATA)
         if level == Level.NOMINAL and notified:
             _notify()
             self._storage.remove_lock_for_domain_and_key(domain, alert_key)
-        elif level in (Level.WARNING, Level.CRITICAL, Level.NO_DATA) and not notified:
+        elif level in should_notify and not notified:
             _notify()
             self._storage.set_lock_for_domain_and_key(domain, alert_key)
 

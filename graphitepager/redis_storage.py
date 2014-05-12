@@ -1,5 +1,6 @@
 import json
 
+
 class RedisStorage(object):
 
     def __init__(self, redis_lib, url):
