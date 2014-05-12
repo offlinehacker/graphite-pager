@@ -102,6 +102,7 @@ def update_notifiers(notifier_proxy, alert, record):
         print description
 
     notifier_proxy.notify(
+        alert,
         alert_key,
         alert_level,
         description,
@@ -180,10 +181,11 @@ def run():
                 notification = 'Could not get target: {}'.format(target)
                 print notification
                 notifier_proxy.notify(
+                    alert,
                     target,
                     Level.CRITICAL,
                     notification,
-                    notification,
+                    notification
                 )
                 records = []
 
