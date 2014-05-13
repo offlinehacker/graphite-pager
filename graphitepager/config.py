@@ -27,6 +27,16 @@ class Config(object):
     def get(self, key, default=None):
         return os.environ.get(key, self._data.get(key.lower(), default))
 
+    def has(self, key):
+        value = None
+        _key = key.lower()
+        if _key in self._data:
+            value = self._data[_key]
+        elif key in os.environ:
+            value = os.environ.get(key, None)
+
+        return value is not None and value != ''
+
     def get_alerts(self, config):
         alerts = []
         doc_url = self.config.data('docs_url')
@@ -36,6 +46,6 @@ class Config(object):
 
     def has_keys(self, keys):
         for key in keys:
-            if self.get(key) is None:
+            if self.has(key) is False:
                 return False
         return True
