@@ -1,5 +1,4 @@
 import hipchat
-import os
 
 from graphitepager.level import Level
 from graphitepager.notifiers.base import BaseNotifier
@@ -7,15 +6,15 @@ from graphitepager.notifiers.base import BaseNotifier
 
 class HipChatNotifier(BaseNotifier):
 
-    def __init__(self, storage):
-        super(HipChatNotifier, self).__init__(storage)
+    def __init__(self, storage, config):
+        super(HipChatNotifier, self).__init__(storage, config)
         self._rooms = set()
 
-        env_vars = ['HIPCHAT_KEY', 'HIPCHAT_ROOM']
-        self.enabled = all(x in os.environ for x in env_vars)
+        required = ['HIPCHAT_KEY', 'HIPCHAT_ROOM']
+        self.enabled = config.has_keys(required)
         if self.enabled:
-            self._client = hipchat.HipChat(os.getenv('HIPCHAT_KEY'))
-            self.add_room(os.getenv('HIPCHAT_ROOM'))
+            self._client = hipchat.HipChat(config.get('HIPCHAT_KEY'))
+            self.add_room(config.get('HIPCHAT_ROOM'))
 
     def _notify(self,
                 alert,
