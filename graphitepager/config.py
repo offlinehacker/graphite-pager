@@ -25,15 +25,7 @@ class Config(object):
         return self._data[key]
 
     def get(self, key, default=None):
-        value = os.environ.get(key, None)
-        if value is None:
-            _key = key.lower()
-            value = self._data.get(_key, None)
-
-        if value is None:
-            value = default
-
-        return value
+        return os.environ.get(key, self._data.get(key.lower(), default))
 
     def get_alerts(self, config):
         alerts = []
