@@ -37,7 +37,7 @@ class Config(object):
 
         return value is not None and value != ''
 
-    def get_alerts(self, config):
+    def get_alerts(self):
         alerts = []
         doc_url = self.config.data('docs_url')
         for alert_string in self.config.data('alerts'):
