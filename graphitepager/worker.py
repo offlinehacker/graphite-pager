@@ -121,14 +121,8 @@ def create_notifier_proxy(config):
     STORAGE = RedisStorage(redis, redis_url)
 
     klasses = [
-        ClickatellNotifier,
         HipChatNotifier,
-        NexmoNotifier,
         PagerdutyNotifier,
-        ProwlNotifier,
-        PushoverNotifier,
-        TwilioNotifier,
-        WebhookNotifier
     ]
 
     notifier_proxy = NotifierProxy()
