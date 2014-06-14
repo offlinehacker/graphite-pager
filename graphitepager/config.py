@@ -11,7 +11,7 @@ def contents_of_file(filename):
     return contents
 
 
-def get_config(path):
+def parse_config(path):
     return Config(path)
 
 
@@ -37,10 +37,10 @@ class Config(object):
 
         return value is not None and value != ''
 
-    def get_alerts(self, config):
+    def alerts(self):
         alerts = []
-        doc_url = self.config.data('docs_url')
-        for alert_string in self.config.data('alerts'):
+        doc_url = self._data.get('docs_url')
+        for alert_string in self._data.get('alerts'):
             alerts.append(Alert(alert_string, doc_url))
         return alerts
 

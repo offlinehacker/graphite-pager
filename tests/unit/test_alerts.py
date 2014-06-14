@@ -2,7 +2,7 @@
 from uuid import uuid4
 from unittest import TestCase
 
-from mock import patch, Mock
+from mock import patch
 
 from graphitepager.config import contents_of_file
 

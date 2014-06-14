@@ -136,6 +136,23 @@ values
     worker nodes above 5
 
 
+## Extra configuration
+
+You may also set more configuration in your yaml file:
+
+- `graphite_url`
+- `ignore_no_data`
+- `time_per_run`
+
+## Testing
+
+You can run tests via `nose`:
+
+```bash
+pip install nose
+nosetests
+```
+
 ## TODO
 
 * Create a package

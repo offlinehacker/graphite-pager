@@ -1,4 +1,3 @@
-from mock import MagicMock
 from unittest import TestCase
 
 from graphitepager.graphite_data_record import (
@@ -69,4 +68,7 @@ class TestGraphitDataRecordWithComma(_BaseTest):
     data = SAMPLE_COMMA
 
     def test_metric_name(self):
-        self.assertEqual(self.record.target, 'scale(redis.number_of_lists,1.0)')
+        self.assertEqual(
+            self.record.target,
+            'scale(redis.number_of_lists,1.0)'
+        )

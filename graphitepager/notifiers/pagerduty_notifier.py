@@ -1,13 +1,13 @@
 import pagerduty
 
 from graphitepager.level import Level
-from graphitepager.notifiers.base import BaseNotifier
+from graphitepager.notifiers.base_notifier import BaseNotifier
 
 
 class PagerdutyNotifier(BaseNotifier):
 
-    def __init__(self, storage, config):
-        super(PagerdutyNotifier, self).__init__(storage, config)
+    def __init__(self, storage, config, logger=None):
+        super(PagerdutyNotifier, self).__init__(storage, config, logger)
 
         required = ['PAGERDUTY_KEY']
         self.enabled = config.has_keys(required)

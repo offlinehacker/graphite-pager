@@ -1,9 +1,11 @@
+from graphitepager.base_log import BaseLog
 from graphitepager.level import Level
 
 
-class BaseNotifier(object):
+class BaseNotifier(BaseLog):
 
-    def __init__(self, storage, config):
+    def __init__(self, storage, config, logger=None):
+        super(BaseNotifier, self).__init__(logger=logger)
         self._client = None
         self._storage = storage
         self._domain = self.__class__.__name__.replace('Notifier', '')

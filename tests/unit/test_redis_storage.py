@@ -1,12 +1,11 @@
 from unittest import TestCase
 import json
 
-from mock import patch, MagicMock
+from mock import MagicMock
 import redis
 
 
 from graphitepager.redis_storage import RedisStorage
-from graphitepager.alerts import Alert
 from graphitepager.graphite_data_record import GraphiteDataRecord
 
 
@@ -15,14 +14,18 @@ class TestRedisStorage(TestCase):
     def setUp(self):
         self.r_url = 'Redis URL'
         self.redis = MagicMock(redis)
-        self.client = self.redis.from_url()
+        self.client = self.redis.from_url(self.r_url)
         self.alert = 'ALERT!'
         self.domain = 'DOMAIN'
         self.record = MagicMock(GraphiteDataRecord)()
         self.alert_key = 'ALERT!-incident-key'
         self.lock_key = 'LOCK-{0}-{1}'.format(self.domain, self.alert)
+        self.config = {}
 
-        self.rs = RedisStorage(self.redis, self.r_url)
+        self.rs = RedisStorage(self.config)
+        self.rs._redis = self.redis
+        self.rs._client = self.client
+        self.rs._redis_url = self.r_url
 
     def should_create_redis_client(self):
         self.redis.from_url.assert_called_with(self.r_url)
@@ -99,6 +102,7 @@ class TestRedisStorageGettingLockWhenThereIsAKey(TestRedisStorage):
 
     def test_get_true_back(self):
         self.assertEqual(self.returned, True)
+
 
 class TestRedisStorageSettingLock(TestRedisStorage):
 

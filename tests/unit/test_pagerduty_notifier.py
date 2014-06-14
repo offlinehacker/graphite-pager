@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 
-from mock import patch, MagicMock
+from mock import MagicMock
 from pagerduty import PagerDuty
 
 from graphitepager.notifiers.pagerduty_notifier import PagerdutyNotifier

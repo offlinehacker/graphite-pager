@@ -5,7 +5,6 @@ def get_records(base_url, http_get, data_record, target, **kwargs):
     resp.raise_for_status()
     records = []
     for line in resp.content.split('\n'):
-        print line
         if line:
             record = data_record(line)
             records.append(record)
