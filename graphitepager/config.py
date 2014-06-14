@@ -22,7 +22,7 @@ class Config(object):
         self._data = yaml.load(alert_yml)
 
     def data(self, key):
-        return self._data[key]
+        return self._data.get(key)
 
     def get(self, key, default=None):
         return os.environ.get(key, self._data.get(key.lower(), default))
@@ -39,8 +39,8 @@ class Config(object):
 
     def get_alerts(self):
         alerts = []
-        doc_url = self.config.data('docs_url')
-        for alert_string in self.config.data('alerts'):
+        doc_url = self.data('docs_url')
+        for alert_string in self.data('alerts'):
             alerts.append(Alert(alert_string, doc_url))
         return alerts
 
