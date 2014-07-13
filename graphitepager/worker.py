@@ -1,4 +1,3 @@
-import argparse
 import datetime
 import time
 
@@ -12,6 +11,7 @@ from graphitepager.graphite_data_record import GraphiteDataRecord
 from graphitepager.graphite_target import get_records
 from graphitepager.level import Level
 from graphitepager.redis_storage import RedisStorage
+from graphitepager.utils import parse_args
 
 from notifiers.notifier_proxy import NotifierProxy
 from notifiers.hipchat_notifier import HipChatNotifier
@@ -61,37 +61,15 @@ def create_notifier_proxy(config):
     return notifier_proxy
 
 
-def get_args_from_cli():
-    parser = argparse.ArgumentParser(description='Run Graphite Pager')
-    parser.add_argument(
-        '--config',
-        metavar='config',
-        type=str,
-        nargs=1,
-        default='alerts.yml',
-        help='path to the config file'
-    )
-    parser.add_argument(
-        'command',
-        nargs='?',
-        choices=['run', 'verify'],
-        default='run',
-        help='What action to take'
-    )
-
-    args = parser.parse_args()
-    return args
-
-
 def verify(args):
-    config = get_config(args.config[0])
+    config = get_config(args.config)
     config.get_alerts()
     print 'Valid configuration, good job!'
     return
 
 
 def run(args):
-    config = get_config(args.config[0])
+    config = get_config(args.config)
     alerts = config.get_alerts()
     notifier_proxy = create_notifier_proxy(config)
     graphite_url = config.get('GRAPHITE_URL')
@@ -146,11 +124,10 @@ def run(args):
 
 
 def main():
-    args = get_args_from_cli()
-    if 'verify' in args.command:
+    args = parse_args()
+    if args.command == 'verify':
         return verify(args)
-    else:
-        return run(args)
+    return run(args)
 
 
 if __name__ == '__main__':
