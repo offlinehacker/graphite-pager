@@ -5,5 +5,13 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt --use-mirrors
+  - pip install mock --use-mirrors
+  - pip install pep8 --use-mirrors
+  - pip install pyflakes --use-mirrors
 # command to run tests
+before_script:
+  - pep8 graphitepager
+  - pep8 tests
+  - pyflakes graphitepager
+  - pyflakes tests
 script: nosetests tests/*
