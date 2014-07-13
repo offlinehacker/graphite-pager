@@ -1,7 +1,6 @@
 from urllib import urlencode
 import argparse
 import datetime
-import os
 import time
 
 from jinja2 import Template
