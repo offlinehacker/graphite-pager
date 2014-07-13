@@ -63,14 +63,14 @@ def create_notifier_proxy(config):
 
 def verify(args):
     config = get_config(args.config)
-    config.get_alerts()
+    config.alerts()
     print 'Valid configuration, good job!'
     return
 
 
 def run(args):
     config = get_config(args.config)
-    alerts = config.get_alerts()
+    alerts = config.alerts()
     notifier_proxy = create_notifier_proxy(config)
     graphite_url = config.get('GRAPHITE_URL')
     while True:

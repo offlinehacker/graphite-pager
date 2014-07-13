@@ -37,10 +37,10 @@ class Config(object):
 
         return value is not None and value != ''
 
-    def get_alerts(self):
+    def alerts(self):
         alerts = []
-        doc_url = self.data('docs_url')
-        for alert_string in self.data('alerts'):
+        doc_url = self._data.get('docs_url')
+        for alert_string in self._data.get('alerts'):
             alerts.append(Alert(alert_string, doc_url))
         return alerts
 
