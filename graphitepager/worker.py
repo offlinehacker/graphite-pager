@@ -1,102 +1,29 @@
-from urllib import urlencode
 import argparse
 import datetime
 import time
 
-from jinja2 import Template
 import redis
 import requests
 import requests.exceptions
 
-from config import get_config
-from graphite_data_record import GraphiteDataRecord
-from graphite_target import get_records
-from level import Level
-from redis_storage import RedisStorage
+from graphitepager.config import get_config
+from graphitepager.description import get_descriptions
+from graphitepager.graphite_data_record import GraphiteDataRecord
+from graphitepager.graphite_target import get_records
+from graphitepager.level import Level
+from graphitepager.redis_storage import RedisStorage
 
 from notifiers.notifier_proxy import NotifierProxy
 from notifiers.hipchat_notifier import HipChatNotifier
 from notifiers.pagerduty_notifier import PagerdutyNotifier
 
 
-ALERT_TEMPLATE = r"""{{level}} alert for {{alert.name}} {{record.target}}.  The
-current value is {{current_value}} which passes the {{threshold_level|lower}}
-value of {{threshold_value}}. Go to {{graph_url}}.
-{% if docs_url %}Documentation: {{docs_url}}{% endif %}.
-"""
-HTML_ALERT_TEMPLATE = r"""{{level}} alert for {{alert.name}} {{record.target}}.
-The current value is {{current_value}} which passes the
-{{threshold_level|lower}} value of {{threshold_value}}.
-Go to <a href="{{graph_url}}">the graph</a>.
-{% if docs_url %}<a href="{{docs_url}}">Documentation</a>{% endif %}.
-"""
-
-
-def description_for_alert(template,
-                          graphite_url,
-                          alert,
-                          record,
-                          level,
-                          current_value):
-    context = dict(locals())
-    context['graphite_url'] = graphite_url
-    context['docs_url'] = alert.documentation_url(record.target)
-    url_params = (
-        ('width', 586),
-        ('height', 308),
-        ('target', alert.target),
-        ('target', 'threshold({},"Warning")'.format(alert.warning)),
-        ('target', 'threshold({},"Critical")'.format(alert.critical)),
-        ('from', '-20mins'),
-    )
-    url_args = urlencode(url_params)
-    url = '{}/render/?{}'.format(graphite_url, url_args)
-    context['graph_url'] = url.replace('https', 'http')
-    context['threshold_value'] = alert.value_for_level(level)
-    if level == Level.NOMINAL:
-        context['threshold_level'] = 'warning'
-    else:
-        context['threshold_level'] = level
-
-    return Template(template).render(context)
-
-
-class Description(object):
-
-    def __init__(self, template, graphite_url, alert, record, level, value):
-        self.template = template
-        self.graphite_url = graphite_url
-        self.alert = alert
-        self.record = record
-        self.level = level
-        self.value = value
-
-    def __str__(self):
-        return description_for_alert(
-            self.template,
-            self.graphite_url,
-            self.alert,
-            self.record,
-            self.level,
-            self.value,
-        )
-
-
 def update_notifiers(notifier_proxy, alert, record, graphite_url):
-    alert_key = '{} {}'.format(alert.name, record.target)
+    alert_key = '{} {}'.format(alert.get('name'), record.target)
 
     alert_level, value = alert.check_record(record)
 
-    description = Description(
-        ALERT_TEMPLATE,
-        graphite_url,
-        alert,
-        record,
-        alert_level,
-        value
-    )
-    html_description = Description(
-        HTML_ALERT_TEMPLATE,
+    description, html_description = get_descriptions(
         graphite_url,
         alert,
         record,
@@ -172,14 +99,14 @@ def run(args):
         start_time = time.time()
         seen_alert_targets = set()
         for alert in alerts:
-            target = alert.target
+            target = alert.get('target')
             try:
                 records = get_records(
                     graphite_url,
                     requests.get,
                     GraphiteDataRecord,
                     target,
-                    from_=alert.from_,
+                    from_=alert.get('from'),
                 )
             except requests.exceptions.RequestException:
                 notification = 'Could not get target: {}'.format(target)
@@ -194,7 +121,7 @@ def run(args):
                 records = []
 
             for record in records:
-                name = alert.name
+                name = alert.get('name')
                 target = record.target
                 if (name, target) not in seen_alert_targets:
                     print 'Checking', (name, target)
