@@ -1,12 +1,11 @@
 from unittest import TestCase
 import json
 
-from mock import patch, MagicMock
+from mock import MagicMock
 import redis
 
 
 from graphitepager.redis_storage import RedisStorage
-from graphitepager.alerts import Alert
 from graphitepager.graphite_data_record import GraphiteDataRecord
 
 
@@ -53,7 +52,8 @@ class TestRedisStorageSettingIncidentKey(TestRedisStorage):
 
     def setUp(self):
         super(TestRedisStorageSettingIncidentKey, self).setUp()
-        self.returned = self.rs.set_incident_key_for_alert_key(self.alert, 'INCIDENT')
+        self.returned = self.rs.set_incident_key_for_alert_key(
+            self.alert, 'INCIDENT')
         self.value = json.dumps({'incident': 'INCIDENT'})
 
     def test_sets_redis_key_for_alert_and_record(self):
@@ -78,7 +78,8 @@ class TestRedisStorageGettingLockWhenNoKey(TestRedisStorage):
     def setUp(self):
         super(TestRedisStorageGettingLockWhenNoKey, self).setUp()
         self.client.get.return_value = None
-        self.returned = self.rs.is_locked_for_domain_and_key(self.domain, self.alert)
+        self.returned = self.rs.is_locked_for_domain_and_key(
+            self.domain, self.alert)
 
     def test_get_set_lock_key(self):
         self.client.get.assert_called_once_with(self.lock_key)
@@ -92,7 +93,8 @@ class TestRedisStorageGettingLockWhenThereIsAKey(TestRedisStorage):
     def setUp(self):
         super(TestRedisStorageGettingLockWhenThereIsAKey, self).setUp()
         self.client.get.return_value = True
-        self.returned = self.rs.is_locked_for_domain_and_key(self.domain, self.alert)
+        self.returned = self.rs.is_locked_for_domain_and_key(
+            self.domain, self.alert)
 
     def test_get_set_lock_key(self):
         self.client.get.assert_called_once_with(self.lock_key)
@@ -100,12 +102,14 @@ class TestRedisStorageGettingLockWhenThereIsAKey(TestRedisStorage):
     def test_get_true_back(self):
         self.assertEqual(self.returned, True)
 
+
 class TestRedisStorageSettingLock(TestRedisStorage):
 
     def setUp(self):
         super(TestRedisStorageSettingLock, self).setUp()
         self.client.getset.return_value = 'Locked'
-        self.returned = self.rs.set_lock_for_domain_and_key(self.domain, self.alert)
+        self.returned = self.rs.set_lock_for_domain_and_key(
+            self.domain, self.alert)
 
     def test_should_set_expiry(self):
         self.client.expire.assert_called_once_with(self.lock_key, 300)
@@ -118,7 +122,8 @@ class TestRedisStorageRemovingExistingLock(TestRedisStorage):
 
     def setUp(self):
         super(TestRedisStorageRemovingExistingLock, self).setUp()
-        self.returned = self.rs.remove_lock_for_domain_and_key(self.domain, self.alert)
+        self.returned = self.rs.remove_lock_for_domain_and_key(
+            self.domain, self.alert)
 
     def test_deletes_key(self):
         self.client.delete.assert_called_once_with(self.lock_key)

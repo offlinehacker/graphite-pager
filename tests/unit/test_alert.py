@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-from mock import call, MagicMock
-import requests
 
 from graphitepager.alerts import Alert
 from graphitepager.level import Level
