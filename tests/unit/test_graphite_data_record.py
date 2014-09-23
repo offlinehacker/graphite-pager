@@ -19,6 +19,8 @@ SAMPLE_COMMA = ','.join([
 
 class _BaseTest(TestCase):
 
+    data = SAMPLE_FINE
+
     def setUp(self):
         self.record = GraphiteDataRecord(self.data)
 
