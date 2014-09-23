@@ -2,5 +2,6 @@ Jinja2==2.6
 PyYAML==3.10
 pagerduty==0.2.1
 redis==2.6.2
-requests==0.14.0
+requests==2.4.1
 python-simple-hipchat==0.1
+pushbullet.py==0.5.0

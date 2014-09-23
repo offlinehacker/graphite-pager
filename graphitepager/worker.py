@@ -16,6 +16,7 @@ from graphitepager.utils import parse_args
 from notifiers.notifier_proxy import NotifierProxy
 from notifiers.hipchat_notifier import HipChatNotifier
 from notifiers.pagerduty_notifier import PagerdutyNotifier
+from notifiers.pushbullet_notifier import PushBulletNotifier
 
 
 def update_notifiers(notifier_proxy, alert, record, graphite_url):
@@ -49,6 +50,7 @@ def create_notifier_proxy(config):
     klasses = [
         HipChatNotifier,
         PagerdutyNotifier,
+        PushBulletNotifier
     ]
 
     notifier_proxy = NotifierProxy()

@@ -1,11 +1,12 @@
 Graphite Pager
 ==============
 
-Graphite Pager is a small application to send PagerDuty alerts based on
+Graphite Pager is a small application to send notification alerts based on
 Graphite metrics. This makes it easy to be paged about what's happening in
-your system.
+your system. It was primarily made for sending notifications using PagerDuty,
+but was latter added support for other notifiers.
 
-You shouldn't uses this yet, I'm still playing with it.
+You shouldn't use this yet, I'm still playing with it.
 
 It can be deployed to Heroku (make sure you use SSL!)
 
@@ -16,23 +17,26 @@ Graphite is a great tool for recording metrics but it isn't easy to get paged
 when a metric passes a certain threshold.
 
 Graphite-Pager is an easy to use alerting tool for Graphite that will send
-Pager Duty alerts if a metric reaches a warning or critical level.
+notification alerts if a metric reaches a warning or critical level.
 
 
 ## Requirements
 
-* PagerDuty account
 * Graphite
 * Redis
 
 ## Notifiers
 
 Notifiers are what communicate with your preferred alerting service. Currently
-PagerDuty is required and HipChat is optional.
+Graphite-Pager supports PagerDuty, HipChat and PushBullet notifications.
 
 PagerDuty requires an application key set in the environment as `PAGERDUTY_KEY`
 
 HipChat requires an application key `HIPCHAT_KEY` and the room to notify `HIPCHAT_ROOM`
+
+PushBullet requires an application key `PUSHBULLET_KEY` and optionally
+comma separated list of devices in `PUSHBULLET_DEVICES` and/or comma
+separated list of contacts in `PUSHBULLET_CONTACTS`.
 
 More notifiers are easy to write, file an issue if there is something you would like!
 
